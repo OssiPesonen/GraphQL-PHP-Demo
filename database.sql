@@ -1,22 +1,20 @@
-DROP TABLE IF EXISTS `author`;
 CREATE TABLE IF NOT EXISTS `author` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8_swedish_ci  NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 INSERT INTO `author` (`id`, `name`) VALUES
 (1, 'J. K. Rowling'),
 (2, 'Andrzej Sapkowski'),
 (3, 'J. R. R. Tolkien');
 
-DROP TABLE IF EXISTS `book`;
 CREATE TABLE IF NOT EXISTS `book` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8_swedish_ci  NOT NULL,
   `author_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
 INSERT INTO `book` (`id`, `title`, `author_id`) VALUES
 (1, 'Harry Potter and the Philosopher\'s Stone', 1),

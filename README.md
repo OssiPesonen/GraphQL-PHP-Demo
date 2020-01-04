@@ -14,6 +14,7 @@ GraphQL implementation is provided by [webonyx/graphql-php](https://webonyx.gith
 - Download
 - Unpack
 - Set up a database table (I used MySQL here) and import the `database.sql`    
+- Add your database connection settings to app/settings.php `db` section. Defaults are set to localhost demo database.
 - cd to project root and run:
 
 `composer install`
