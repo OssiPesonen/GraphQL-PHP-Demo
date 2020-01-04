@@ -1,11 +1,11 @@
-This is a demo on how to get GraphQL running with PHP with `overblog/dataloader-php` installed to mitigate the infamous `n+1` problem. 
+This is a repository demonstrating  how to actually set up GraphQL with PHP but also how to mitigate the infamous `n+1` 
+problem by deferring the actual field resolution to a later stage. This implementation uses [DataloaderPHP](https://www.google.com/search?client=firefox-b-d&q=dataloader-php)
+for the dererral.
 
-In this demo I wanted to demonstrate on how to actually set up GraphQL with PHP but also how to mitigate the infamous `n+1` problem by deferring the actual field resolution to a later stage. 
-
-This project is set up on top of [Slim Framework](http://www.slimframework.com/) v4 which acts as an API with one single route.
+The project is set up on top of [Slim Framework](http://www.slimframework.com/) v4 which acts as an API.
 Slim provides out-of-the-box Monolog support with their Skeleton project that you can use to actually log database queries and see what happens.
 
-Database connection is handled using `Doctrine DBAL` and logged with an `SQLLogger` instance.
+Database connection is handled using [Doctrine DBAL](https://github.com/doctrine/dbal) and logged with an `SQLLogger` instance.
 
 GraphQL implementation is provided by [webonyx/graphql-php](https://webonyx.github.io/graphql-php/)
 
@@ -13,8 +13,7 @@ GraphQL implementation is provided by [webonyx/graphql-php](https://webonyx.gith
 
 - Download
 - Unpack
-- Set up a MySQL database table
-    - (Any database with the same structure will do if you configure Doctrine DBAL to use the right driver)
+- Set up a database table (I used MySQL here) and import the `database.sql`    
 - cd to project root and run:
 
 `composer install`
