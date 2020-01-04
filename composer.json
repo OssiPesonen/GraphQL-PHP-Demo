@@ -1,0 +1,27 @@
+{
+    "name": "ossipesonen/grapql-php-demo",
+    "description": "A demo repository for GraphQL on PHP with overblog/dataloader-php to demonstrate how to mitigate the infamous n+1 problem",
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "doctrine/dbal": "^2.10",
+        "monolog/monolog": "^1.24",
+        "overblog/dataloader-php": "^0.5.3",
+        "php-di/php-di": "^6.0",
+        "slim/psr7": "^0.5",
+        "slim/slim": "^4.1",
+        "webonyx/graphql-php": "^0.13.8"
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "start": "php -S localhost:8080 -t public"
+    }
+}
