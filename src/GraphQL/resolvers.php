@@ -5,7 +5,7 @@ use Overblog\DataLoader\DataLoader;
 return [
     'Book' => [
         'author' => function ($rootValue, $args, $context) {
-            return DataLoader::await($context['authorLoader']->load($rootValue['author_id']));
+            return DataLoader::await($context['loaders']['author']->load($rootValue['author_id']));
         }
     ],
     'Query' => [

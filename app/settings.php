@@ -9,16 +9,17 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         'settings' => [
             'displayErrorDetails' => true,
-             'logger' => [
-                'name' => 'slim-app',
-                'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+            'logger'              => [
+                'name'  => 'slim-app',
+                'path'  => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
                 'level' => Logger::DEBUG,
             ],
-            'db' => [
-                'name' => 'demo',
-                'host' => 'localhost',
+            'db'                  => [
+                'name'     => 'demo',
+                'host'     => 'localhost',
                 'username' => 'root',
-                'password' => ''
+                'password' => '',
+                'driver'   => 'pdo_mysql'
             ]
         ],
     ]);

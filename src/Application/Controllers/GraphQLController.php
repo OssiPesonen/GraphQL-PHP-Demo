@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Controllers;
 
+use App\GraphQL\DataLoaders;
 use Doctrine\DBAL\Connection;
 use GraphQL\Executor\Executor;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
-use Overblog\DataLoader\DataLoader;
 use Overblog\DataLoader\Promise\Adapter\Webonyx\GraphQL\SyncPromiseAdapter;
 use Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -38,27 +38,14 @@ class GraphQLController
         $graphQLSyncPromiseAdapter = new SyncPromiseAdapter();
         $promiseAdapter = new WebonyxGraphQLSyncPromiseAdapter($graphQLSyncPromiseAdapter);
 
-        # Warning! As an example, this resides in the controller method. However, a smarter way of handling loaders should be made because this will bloat up the function
-        $authorLoader = new DataLoader(function ($keys) use ($promiseAdapter) {
-            $ids = join(',', $keys);
-            $idMap = array_flip($keys);
-
-            $rows = $this->db->executeQuery("SELECT id, name FROM author WHERE id in (?)", [$ids]);
-
-            foreach ($rows as $r) {
-                $idMap[$r['id']] = $r;
-            }
-
-            return $promiseAdapter->createAll(array_values($idMap));
-        }, $promiseAdapter);
+        $dataLoaders = new DataLoaders($this->db);
 
         GraphQL::setPromiseAdapter($graphQLSyncPromiseAdapter);
 
         $this->resolvers(include dirname(__DIR__, 3) . '/src/GraphQL/resolvers.php');
         $schema = BuildSchema::build(file_get_contents(dirname(__DIR__, 3) . '/src/GraphQL/schema.graphqls'));
 
-        # Request
-        $input = json_decode(file_get_contents('php://input'), true);
+        $input = $request->getParsedBody();
         $query = $input['query'];
 
         # Variables
@@ -66,19 +53,17 @@ class GraphQLController
 
         # Context, objects and data the resolver can then access. In this case the database object.
         $context = [
-            'authorLoader' => $authorLoader,
-            'db'           => $this->db,
-            'logger'       => $this->logger
+            'loaders' => $dataLoaders->build($promiseAdapter),
+            'db'      => $this->db,
+            'logger'  => $this->logger
         ];
 
         # Resolver result
         $result = GraphQL::executeQuery($schema, $query, null, $context, $variableValues);
 
-        $payload = json_encode($result);
-        $response->getBody()->write($payload);
+        $response->getBody()->write(json_encode($result));
 
         $sqlQueryLogger = $this->db->getConfiguration()->getSQLLogger();
-
         $this->logger->info(json_encode($sqlQueryLogger->queries));
 
         return $response->withHeader('Content-Type', 'application/json');

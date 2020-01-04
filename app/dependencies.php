@@ -31,11 +31,14 @@ return function (ContainerBuilder $containerBuilder) {
                 'user'     => $settings['db']['username'],
                 'password' => $settings['db']['password'],
                 'host'     => $settings['db']['host'],
-                'driver'   => 'pdo_mysql',
+                'driver'   => $settings['db']['driver'],
             ];
 
             $connection = DriverManager::getConnection($connectionParams);
+
+            # Set up SQL logging
             $connection->getConfiguration()->setSQLLogger(new DebugStack());
+
             return $connection;
         }
     ]);
