@@ -1,16 +1,15 @@
 <?php
 
-use Overblog\DataLoader\DataLoader;
-
 return [
-    'Book' => [
-        'author' => function ($rootValue, $args, $context) {
-            return DataLoader::await($context['loaders']['author']->load($rootValue['author_id']));
+    'Book'  => [
+        'author' => function ($book, $args, $context) {
+            return $context['loaders']['author']->load($book['author_id']);
         }
     ],
     'Query' => [
-        'getBooks' => function($root, $args, $context) {
-            return $context['db']->fetchAll("SELECT * FROM book");
+        'getBooks' => function ($root, $args, $context) {
+            $books = $context['db']->fetchAll("SELECT * FROM book");
+            return $books;
         }
     ]
 ];

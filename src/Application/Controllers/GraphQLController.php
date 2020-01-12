@@ -6,7 +6,6 @@ namespace App\Application\Controllers;
 use App\GraphQL\DataLoaders;
 use Doctrine\DBAL\Connection;
 use GraphQL\Executor\Executor;
-use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
 use Overblog\DataLoader\Promise\Adapter\Webonyx\GraphQL\SyncPromiseAdapter;
@@ -14,6 +13,8 @@ use Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
+use GraphQL\Server\ServerConfig;
+use GraphQL\Server\StandardServer;
 
 class GraphQLController
 {
@@ -40,16 +41,8 @@ class GraphQLController
 
         $dataLoaders = new DataLoaders($this->db);
 
-        GraphQL::setPromiseAdapter($graphQLSyncPromiseAdapter);
-
         $this->resolvers(include dirname(__DIR__, 3) . '/src/GraphQL/resolvers.php');
         $schema = BuildSchema::build(file_get_contents(dirname(__DIR__, 3) . '/src/GraphQL/schema.graphqls'));
-
-        $input = $request->getParsedBody();
-        $query = $input['query'];
-
-        # Variables
-        $variableValues = isset($input['variables']) ? $input['variables'] : null;
 
         # Context, objects and data the resolver can then access. In this case the database object.
         $context = [
@@ -58,10 +51,16 @@ class GraphQLController
             'logger'  => $this->logger
         ];
 
-        # Resolver result
-        $result = GraphQL::executeQuery($schema, $query, null, $context, $variableValues);
+        # Create server configuration
+        $config = ServerConfig::create()
+            ->setSchema($schema)
+            ->setContext($context)
+            ->setQueryBatching(true)
+            ->setPromiseAdapter($graphQLSyncPromiseAdapter);
 
-        $response->getBody()->write(json_encode($result));
+        # Allow GraphQL Server to handle the request and response
+        $server = new StandardServer($config);
+        $response = $server->processPsrRequest($request, $response, $response->getBody());
 
         $sqlQueryLogger = $this->db->getConfiguration()->getSQLLogger();
         $this->logger->info(json_encode($sqlQueryLogger->queries));

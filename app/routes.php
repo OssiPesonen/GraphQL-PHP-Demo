@@ -5,5 +5,5 @@ use App\Application\Controllers\GraphQLController;
 use Slim\App;
 
 return function (App $app) {
-    $app->any('/', GraphQLController::class . ':index');
+    $app->any('/graphql', GraphQLController::class . ':index');
 };

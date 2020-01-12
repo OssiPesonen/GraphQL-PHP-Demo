@@ -1,19 +1,15 @@
 <?php
-
 namespace App\GraphQL;
-
 use Overblog\DataLoader\DataLoader;
 use Doctrine\DBAL\Connection;
 
 class DataLoaders
 {
     protected $db;
-
     public function __construct(Connection $connection)
     {
         $this->db = $connection;
     }
-
     /**
      * GraphQL DataLoaders which get injected into the context for resolvers to use
      *
@@ -24,10 +20,13 @@ class DataLoaders
     {
         return [
             'author' => new DataLoader(function ($authorIds) use ($promiseAdapter) {
-                    $ids = join(',', $authorIds);
-                    $map = array_flip($authorIds);
+                    $map = [];
 
-                    $rows = $this->db->executeQuery("SELECT id, name FROM author WHERE id in (?)", [$ids]);
+                    $query = $this->db->executeQuery("SELECT id, `name` FROM author WHERE id in (?)",
+                        [$authorIds],
+                        [Connection::PARAM_INT_ARRAY]
+                    );
+                    $rows = $query->fetchAll();
 
                     foreach ($rows as $r) {
                         $map[$r['id']] = $r;
