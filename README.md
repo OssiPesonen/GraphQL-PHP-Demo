@@ -51,31 +51,14 @@ You can afterwards check your `logs/app.log` for the database queries that were 
       "2": {
         "sql": "SELECT id, name FROM author WHERE id in (?)",
         "params": [
-          "1"
+          "1,2,3"
         ],
         "types": [],
         "executionMS": 0.0009009838104248047
-      },
-      "3": {
-        "sql": "SELECT id, name FROM author WHERE id in (?)",
-        "params": [
-          "2"
-        ],
-        "types": [],
-        "executionMS": 0.00042891502380371094
-      },
-      "4": {
-        "sql": "SELECT id, name FROM author WHERE id in (?)",
-        "params": [
-          "3"
-        ],
-        "types": [],
-        "executionMS": 0.00020003318786621094
       }
     }
     
-So we fetched the books in one query and after getting all the possible author ids for all the books, we queried each one. Now there is still room for improvement there.
-You should be able to create a single query to fetch all the authors needed and then map them to the books, but for now this is better than fetching the author per fetched book.
+So we fetched the books in one query and after getting all the possible author ids for all the books, we queried them in one go.
 
 #### Credits
 
