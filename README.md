@@ -41,22 +41,30 @@ After you app is running use Postman or any tool you like to send a GraphQL body
 
 You can afterwards check your `logs/app.log` for the database queries that were executed. The log entry should look like this:
 
-    {
-      "1": {
-        "sql": "SELECT * FROM book",
-        "params": [],
-        "types": [],
-        "executionMS": 0.0005371570587158203
-      },
-      "2": {
-        "sql": "SELECT id, name FROM author WHERE id in (?)",
-        "params": [
-          "1,2,3"
-        ],
-        "types": [],
-        "executionMS": 0.0009009838104248047
-      }
-    }
+```
+{
+  "1": {
+    "sql": "SELECT * FROM book",
+    "params": [],
+    "types": [],
+    "executionMS": 0.00038886070251464844
+  },
+  "2": {
+    "sql": "SELECT id, `name` FROM author WHERE id in (?)",
+    "params": [
+      [
+        "1",
+        "2",
+        "3"
+      ]
+    ],
+    "types": [
+      101
+    ],
+    "executionMS": 0.0014162063598632812
+  }
+}
+```
     
 So we fetched the books in one query and after getting all the possible author ids for all the books, we queried them in one go.
 
