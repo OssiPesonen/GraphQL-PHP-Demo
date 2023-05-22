@@ -8,7 +8,7 @@
         "monolog/monolog": "^1.24",
         "overblog/dataloader-php": "^0.5.3",
         "php-di/php-di": "^6.0",
-        "slim/psr7": "^0.5",
+        "slim/psr7": "^1.4",
         "slim/slim": "^4.1",
         "webonyx/graphql-php": "^0.13.8"
     },
